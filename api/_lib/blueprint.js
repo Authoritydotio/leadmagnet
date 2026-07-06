@@ -121,6 +121,7 @@ async function generateBlueprint(p, apiKey) {
       thinking: { type: 'disabled' },
       messages: [{ role: 'user', content: buildPrompt(p) }],
     }),
+    signal: AbortSignal.timeout(55000),
   });
 
   if (!anthropicRes.ok) {
