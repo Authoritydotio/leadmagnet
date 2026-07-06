@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ override: true });
 const path = require('path');
 const express = require('express');
 
@@ -115,16 +115,28 @@ function sanitizeJsonText(raw) {
   const stripped = raw
     .replace(/```json|```/g, '')
     .trim();
-  let out = '';
+  let noControl = '';
   for (let i = 0; i < stripped.length; i++) {
     const code = stripped.charCodeAt(i);
     if (code === 9 || code === 10 || code === 13) {
-      out += ' ';
+      noControl += ' ';
     } else if (code < 32) {
       // drop other control characters
     } else {
-      out += stripped[i];
+      noControl += stripped[i];
     }
+  }
+  let out = '';
+  for (let i = 0; i < noControl.length; i++) {
+    const ch = noControl[i];
+    if (ch === ',') {
+      let j = i + 1;
+      while (j < noControl.length && noControl[j] === ' ') j++;
+      if (noControl[j] === '}' || noControl[j] === ']') {
+        continue;
+      }
+    }
+    out += ch;
   }
   return out;
 }
@@ -164,7 +176,14 @@ app.post('/api/blueprint', async (req, res) => {
     const textBlock = (data.content || []).find((b) => b.type === 'text');
     const raw = textBlock && textBlock.text;
     if (!raw) throw new Error('empty response from Anthropic (stop_reason: ' + data.stop_reason + ')');
-    const blueprint = JSON.parse(sanitizeJsonText(raw));
+    const cleaned = sanitizeJsonText(raw);
+    let blueprint;
+    try {
+      blueprint = JSON.parse(cleaned);
+    } catch (parseErr) {
+      console.error('[blueprint] raw text was:', cleaned);
+      throw parseErr;
+    }
     res.json(blueprint);
   } catch (err) {
     console.error('[blueprint] generation failed', err);
