@@ -180,6 +180,7 @@
     if (gateSubmitted) return;
     gateSubmitted = true;
     btn.disabled = true;
+    btn.textContent = 'Unlocking your blueprint...';
 
     const { rate, hours, goal, model, profession } = state;
     const payload = {
@@ -220,7 +221,9 @@
   ];
 
   function generateBlueprint(payload) {
-    document.getElementById('spinner-wrap').style.display = 'block';
+    const spinnerWrap = document.getElementById('spinner-wrap');
+    spinnerWrap.style.display = 'block';
+    spinnerWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
     let i = 0;
     const iv = setInterval(() => {
       i = (i + 1) % msgs.length;
