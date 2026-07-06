@@ -1,5 +1,7 @@
-require('dotenv').config({ override: true });
 const path = require('path');
+// Load .env by absolute path relative to this file, so the server works
+// regardless of the directory it is launched from (cwd-independent).
+require('dotenv').config({ path: path.join(__dirname, '..', '.env'), override: true });
 const express = require('express');
 
 const app = express();
