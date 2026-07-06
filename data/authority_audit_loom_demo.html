@@ -1,0 +1,546 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .aa { padding: 1.5rem 0; font-family: var(--font-sans); max-width: 660px; }
+  .progress-bar { display: flex; gap: 6px; margin-bottom: 2rem; }
+  .pd { height: 3px; flex: 1; background: var(--color-border-tertiary); border-radius: 2px; transition: background 0.3s; }
+  .pd.done { background: #B4882A; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; color: #633806; background: #FAEEDA; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .step { display: none; }
+  .step.active { display: block; }
+  .q-title { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; line-height: 1.3; }
+  .q-sub { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
+  .input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+  .prefix { font-size: 18px; font-weight: 500; color: var(--color-text-secondary); }
+  .big-input { font-size: 22px; font-weight: 500; flex: 1; padding: 10px 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); }
+  .big-input:focus { outline: none; border-color: #B4882A; box-shadow: 0 0 0 3px #FAEEDA; }
+  .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .opt { padding: 14px 16px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 14px; cursor: pointer; text-align: left; transition: border-color 0.15s, background 0.15s; }
+  .opt:hover { border-color: #B4882A; background: var(--color-background-secondary); }
+  .opt.sel { border-color: #B4882A; background: #FAEEDA; color: #633806; font-weight: 500; }
+  .opt-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; display: block; }
+  .opt.sel .opt-sub { color: #854F0B; }
+  .next-btn { background: #1a1a1a; color: #fff; border: none; border-radius: var(--border-radius-md); padding: 12px 28px; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+  .next-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .next-btn:hover:not(:disabled) { opacity: 0.85; }
+  .aa-logo { font-size: 11px; font-weight: 500; color: #B4882A; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .aa-name { font-size: 26px; font-weight: 500; color: var(--color-text-primary); line-height: 1.2; margin-bottom: 4px; }
+  .aa-tagline { font-size: 15px; color: var(--color-text-secondary); margin-bottom: 1.5rem; font-style: italic; }
+  .aa-sub-text { font-size: 15px; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 1.75rem; }
+  .examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .ex-chip { font-size: 12px; color: #633806; background: #FAEEDA; border: none; border-radius: 20px; padding: 4px 10px; cursor: pointer; }
+  .ex-chip:hover { background: #FAC775; }
+  .text-input { width: 100%; font-size: 16px; padding: 12px 16px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); margin-bottom: 1rem; }
+  .text-input:focus { outline: none; border-color: #B4882A; box-shadow: 0 0 0 3px #FAEEDA; }
+  .metric-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .metric-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .mc { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
+  .mc-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.3; }
+  .mc-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); line-height: 1.2; }
+  .mc-val.red { color: #A32D2D; }
+  .mc-val.gold { color: #B4882A; }
+  .mc-val.green { color: #3B6D11; }
+  .mc-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 5px; line-height: 1.4; }
+  .gap-visual { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+  .gap-visual-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .gap-track { height: 12px; background: var(--color-border-tertiary); border-radius: 6px; position: relative; margin-bottom: 0.75rem; }
+  .gap-fill-goal { height: 100%; border-radius: 6px; background: #1a1a1a; opacity: 0.15; transition: width 1s ease; position: absolute; top: 0; left: 0; }
+  .gap-fill-ceiling { height: 100%; border-radius: 6px; background: #E24B4A; transition: width 1s ease; position: absolute; top: 0; left: 0; }
+  .gap-marker { position: absolute; top: -4px; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff; transform: translateX(-50%); transition: left 1s ease; }
+  .gap-marker.ceiling { background: #E24B4A; }
+  .gap-marker.goal { background: #1a1a1a; }
+  .gap-labels { display: flex; justify-content: space-between; margin-top: 0.5rem; }
+  .gap-label-item { font-size: 12px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 5px; }
+  .gap-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .gap-amount-box { background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem; }
+  .gap-amount-label { font-size: 13px; color: var(--color-text-secondary); }
+  .gap-amount-val { font-size: 18px; font-weight: 500; color: #B4882A; }
+  .gap-amount-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .lev-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; }
+  .lev-row { display: flex; align-items: center; gap: 12px; }
+  .lev-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 500; flex-shrink: 0; }
+  .lev-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+  .insight { border-left: 3px solid #B4882A; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; background: #FAEEDA; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+  .insight p { font-size: 14px; color: #412402; margin: 0; line-height: 1.6; }
+  .transition-box { background: #1a1a1a; border-radius: var(--border-radius-lg); padding: 1.1rem 1.5rem; margin-bottom: 1.5rem; }
+  .transition-box p { font-size: 15px; color: #fff; margin: 0; line-height: 1.5; }
+  .transition-box span { color: #B4882A; font-weight: 500; }
+  .spinner-wrap { display: none; padding: 2rem 0; }
+  .spinner-inner { display: flex; align-items: center; gap: 12px; }
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--color-border-tertiary); border-top-color: #B4882A; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin-text { font-size: 14px; color: var(--color-text-secondary); }
+  .bp-header { background: #1a1a1a; border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+  .bp-tag { font-size: 11px; font-weight: 500; color: #B4882A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .bp-headline { font-size: 19px; font-weight: 500; color: #fff; line-height: 1.4; margin: 0; }
+  .bp-summary { font-size: 15px; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 1.5rem; }
+  .four-cs { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px; background: var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
+  .c-card { background: var(--color-background-primary); padding: 1rem; }
+  .c-letter { font-size: 22px; font-weight: 500; color: #B4882A; line-height: 1; margin-bottom: 4px; }
+  .c-name-lbl { font-size: 11px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .c-body { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; }
+  .asset-box { border: 1.5px solid #B4882A; border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+  .asset-label { font-size: 11px; font-weight: 500; color: #854F0B; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+  .asset-name { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+  .pill { display: inline-block; background: #FAEEDA; color: #633806; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-right: 4px; margin-bottom: 4px; }
+  .mmm-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; background: var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
+  .mmm-card { background: var(--color-background-primary); padding: 1rem; }
+  .mmm-step { font-size: 11px; font-weight: 500; color: #B4882A; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+  .mmm-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 5px; }
+  .mmm-body { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .week-box { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; }
+  .week-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; }
+  .week-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .week-col { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+  .week-col.after { background: #FAEEDA; }
+  .week-col-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .week-col.after .week-col-label { color: #854F0B; }
+  .week-item { font-size: 12px; color: var(--color-text-primary); padding: 5px 0; border-bottom: 0.5px solid var(--color-border-tertiary); line-height: 1.4; display: flex; justify-content: space-between; align-items: baseline; }
+  .week-col.after .week-item { border-bottom-color: #EACB8A; }
+  .week-item:last-child { border-bottom: none; }
+  .week-val { font-weight: 500; color: var(--color-text-secondary); font-size: 11px; white-space: nowrap; margin-left: 8px; }
+  .week-col.after .week-val { color: #854F0B; }
+  .week-val.danger { color: #A32D2D !important; }
+  .week-val.good { color: #3B6D11 !important; }
+  .week-note { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .pricing-box { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; }
+  .pricing-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+  .price-eq-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
+  .pe-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+  .pe-card.hi { border-color: #B4882A; }
+  .pe-name { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .pe-val { font-size: 14px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; }
+  .pe-card.hi .pe-val { color: #854F0B; }
+  .pe-desc { font-size: 11px; color: var(--color-text-secondary); margin-top: 3px; line-height: 1.4; }
+  .pricing-note { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .first-step { border-left: 3px solid #B4882A; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; background: var(--color-background-secondary); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+  .fs-label { font-size: 11px; font-weight: 500; color: #854F0B; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+  .fs-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; margin: 0; }
+  .reset-btn { background: none; border: none; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; text-decoration: underline; margin-top: 0.5rem; }
+</style>
+
+<div class="aa">
+  <div class="progress-bar">
+    <div class="pd done" id="pd0"></div>
+    <div class="pd" id="pd1"></div>
+    <div class="pd" id="pd2"></div>
+    <div class="pd" id="pd3"></div>
+    <div class="pd" id="pd4"></div>
+    <div class="pd" id="pd5"></div>
+  </div>
+
+  <div class="step active" id="s0">
+    <div class="aa-logo">authority.io</div>
+    <div class="aa-name">The Authority Audit</div>
+    <div class="aa-tagline">The 5-minute diagnostic for experts who want to earn more & work less</div>
+    <div class="aa-sub-text">Answer 5 quick questions and we'll show you your exact income ceiling — then build a personalised blueprint showing how your expertise becomes a scalable asset.</div>
+    <div class="tag">Step 1 of 5</div>
+    <div class="q-title">What do you charge per hour or session?</div>
+    <div class="q-sub">Use your effective rate — total revenue ÷ total hours worked.</div>
+    <div class="input-row"><span class="prefix">$</span><input class="big-input" type="number" id="rate" placeholder="250" min="1" /></div>
+    <button class="next-btn" id="btn0" onclick="go(1)" disabled>Next →</button>
+  </div>
+
+  <div class="step" id="s1">
+    <div class="tag">Step 2 of 5</div>
+    <div class="q-title">How many client-facing hours do you work per week?</div>
+    <div class="q-sub">Include delivery, consulting, coaching — not admin or marketing.</div>
+    <div class="opt-grid">
+      <button class="opt" onclick="selOpt('hours',10,this)">Under 10 hrs<span class="opt-sub">Part-time delivery</span></button>
+      <button class="opt" onclick="selOpt('hours',20,this)">10–20 hrs<span class="opt-sub">Balanced load</span></button>
+      <button class="opt" onclick="selOpt('hours',30,this)">20–35 hrs<span class="opt-sub">Near capacity</span></button>
+      <button class="opt" onclick="selOpt('hours',40,this)">35+ hrs<span class="opt-sub">Fully maxed out</span></button>
+    </div>
+    <button class="next-btn" id="btn1" disabled onclick="go(2)">Next →</button>
+  </div>
+
+  <div class="step" id="s2">
+    <div class="tag">Step 3 of 5</div>
+    <div class="q-title">What's your annual income goal?</div>
+    <div class="q-sub">The number that would genuinely change how you operate.</div>
+    <div class="input-row"><span class="prefix">$</span><input class="big-input" type="number" id="goal" placeholder="500,000" min="1" /></div>
+    <button class="next-btn" id="btn2" onclick="go(3)" disabled>Next →</button>
+  </div>
+
+  <div class="step" id="s3">
+    <div class="tag">Step 4 of 5</div>
+    <div class="q-title">What best describes your current model?</div>
+    <div class="q-sub">Be honest — this determines your leverage score.</div>
+    <div class="opt-grid">
+      <button class="opt" onclick="selOpt('model',0,this)">100% 1:1 clients<span class="opt-sub">Pure time trade</span></button>
+      <button class="opt" onclick="selOpt('model',25,this)">Mostly 1:1, some group<span class="opt-sub">Starting to scale</span></button>
+      <button class="opt" onclick="selOpt('model',50,this)">Mix of 1:1 and programs<span class="opt-sub">Building leverage</span></button>
+      <button class="opt" onclick="selOpt('model',75,this)">Programs + some 1:1<span class="opt-sub">Mostly scalable</span></button>
+    </div>
+    <button class="next-btn" id="btn3" disabled onclick="go(4)">Next →</button>
+  </div>
+
+  <div class="step" id="s4">
+    <div class="tag">Step 5 of 5</div>
+    <div class="q-title">What's your profession or area of expertise?</div>
+    <div class="q-sub">Be specific — this is what your scalable asset will be built around.</div>
+    <input class="text-input" type="text" id="profession" placeholder="e.g. Functional medicine doctor, Executive leadership coach..." maxlength="120" />
+    <div class="examples">
+      <span style="font-size:12px;color:var(--color-text-secondary);align-self:center">Try:</span>
+      <button class="ex-chip" onclick="fillEx('Executive leadership coach')">Executive leadership coach</button>
+      <button class="ex-chip" onclick="fillEx('Functional medicine doctor')">Functional medicine doctor</button>
+      <button class="ex-chip" onclick="fillEx('Divorce attorney')">Divorce attorney</button>
+      <button class="ex-chip" onclick="fillEx('Financial planner for physicians')">Financial planner for physicians</button>
+    </div>
+    <br>
+    <button class="next-btn" id="btn4" disabled onclick="showResults()">See my results →</button>
+  </div>
+
+  <div class="step" id="s-results">
+    <div class="tag">Your income ceiling report</div>
+    <div class="q-title" id="res-title"></div>
+    <div class="q-sub" id="res-sub"></div>
+
+    <div class="metric-grid-2">
+      <div class="mc"><div class="mc-label">Your income ceiling</div><div class="mc-val red" id="r-ceiling"></div><div class="mc-sub">max at current model</div></div>
+      <div class="mc"><div class="mc-label">Your income goal</div><div class="mc-val" id="r-goal"></div><div class="mc-sub">target you set</div></div>
+    </div>
+
+    <div class="metric-grid-3">
+      <div class="mc">
+        <div class="mc-label">Hours to hit your goal</div>
+        <div class="mc-val red" id="r-hrs-needed"></div>
+        <div class="mc-sub" id="r-hrs-sub"></div>
+      </div>
+      <div class="mc">
+        <div class="mc-label">What your time is actually worth</div>
+        <div class="mc-val gold" id="r-worth"></div>
+        <div class="mc-sub">per hour at your goal — vs your current <span id="r-current-rate"></span>/hr</div>
+      </div>
+      <div class="mc">
+        <div class="mc-label">Hours you could reclaim</div>
+        <div class="mc-val green" id="r-reclaim"></div>
+        <div class="mc-sub">per week with a scalable asset doing the work</div>
+      </div>
+    </div>
+
+    <div class="gap-visual">
+      <div class="gap-visual-label">Your income gap</div>
+      <div class="gap-track">
+        <div class="gap-fill-goal" id="gap-fill-goal" style="width:0%"></div>
+        <div class="gap-fill-ceiling" id="gap-fill-ceiling" style="width:0%"></div>
+        <div class="gap-marker ceiling" id="gap-marker-ceiling" style="left:0%"></div>
+        <div class="gap-marker goal" id="gap-marker-goal" style="left:0%"></div>
+      </div>
+      <div class="gap-labels">
+        <div class="gap-label-item"><div class="gap-dot" style="background:#E24B4A"></div><span id="gap-label-ceiling"></span></div>
+        <div class="gap-label-item"><div class="gap-dot" style="background:#1a1a1a"></div><span id="gap-label-goal"></span></div>
+      </div>
+      <div class="gap-amount-box">
+        <div>
+          <div class="gap-amount-label">Gap your current model can never close</div>
+          <div class="gap-amount-sub" id="gap-sub-text"></div>
+        </div>
+        <div class="gap-amount-val" id="gap-amount"></div>
+      </div>
+    </div>
+
+    <div class="lev-block">
+      <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Your leverage score</div>
+      <div class="lev-row">
+        <div class="lev-circle" id="lev-circle"></div>
+        <div class="lev-desc" id="lev-desc"></div>
+      </div>
+    </div>
+
+    <div class="insight"><p id="insight-text"></p></div>
+
+    <div class="transition-box">
+      <p>Here's what your scalable asset looks like — built specifically for <span id="trans-profession"></span>.</p>
+    </div>
+
+    <div class="spinner-wrap" id="spinner-wrap">
+      <div class="spinner-inner"><div class="spinner"></div><div class="spin-text" id="spin-text">Analysing your expertise...</div></div>
+    </div>
+
+    <div id="blueprint-section" style="display:none">
+      <div class="bp-header">
+        <div class="bp-tag">Your scalable asset blueprint</div>
+        <p class="bp-headline" id="bp-headline"></p>
+      </div>
+      <p class="bp-summary" id="bp-summary"></p>
+
+      <div class="four-cs">
+        <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Curriculum</div><div class="c-body" id="c-curriculum"></div></div>
+        <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Coaching</div><div class="c-body" id="c-coaching"></div></div>
+        <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Community</div><div class="c-body" id="c-community"></div></div>
+        <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">POP Launch</div><div class="c-body" id="c-pop"></div></div>
+      </div>
+
+      <div class="asset-box">
+        <div class="asset-label">Your scalable asset</div>
+        <div class="asset-name" id="bp-asset"></div>
+        <div>
+          <span class="pill" id="bp-size"></span>
+          <span class="pill" id="bp-price"></span>
+          <span class="pill">Evergreen enrollment</span>
+        </div>
+      </div>
+
+      <div class="mmm-row">
+        <div class="mmm-card"><div class="mmm-step">Mastery</div><div class="mmm-title" id="m-title"></div><div class="mmm-body" id="m-body"></div></div>
+        <div class="mmm-card"><div class="mmm-step">Method</div><div class="mmm-title" id="me-title"></div><div class="mmm-body" id="me-body"></div></div>
+        <div class="mmm-card"><div class="mmm-step">Mentorship</div><div class="mmm-title" id="mn-title"></div><div class="mmm-body" id="mn-body"></div></div>
+      </div>
+
+      <div class="week-box">
+        <div class="week-label">What your week looks like</div>
+        <div class="week-compare">
+          <div class="week-col">
+            <div class="week-col-label">Right now</div>
+            <div class="week-item">1:1 client sessions<span class="week-val" id="w-now-sessions"></span></div>
+            <div class="week-item">Admin + prep<span class="week-val" id="w-now-admin"></span></div>
+            <div class="week-item">Marketing + outreach<span class="week-val" id="w-now-mktg"></span></div>
+            <div class="week-item">Weekly income<span class="week-val" id="w-now-income"></span></div>
+            <div class="week-item">If you take a week off<span class="week-val danger">$0</span></div>
+          </div>
+          <div class="week-col after">
+            <div class="week-col-label">With your scalable asset</div>
+            <div class="week-item">Group coaching calls<span class="week-val" id="w-after-calls"></span></div>
+            <div class="week-item">Program delivery + async<span class="week-val" id="w-after-delivery"></span></div>
+            <div class="week-item">Weekly program income<span class="week-val" id="w-after-income"></span></div>
+            <div class="week-item">If you take a week off<span class="week-val good" id="w-after-stop"></span></div>
+          </div>
+        </div>
+        <p class="week-note" id="week-note"></p>
+      </div>
+
+      <div class="pricing-box">
+        <div class="pricing-label">Value-based pricing breakdown</div>
+        <div class="price-eq-row">
+          <div class="pe-card"><div class="pe-name">Cost of the problem</div><div class="pe-val" id="p-cost"></div><div class="pe-desc" id="p-cost-desc"></div></div>
+          <div class="pe-card hi"><div class="pe-name">Recommended price range</div><div class="pe-val" id="p-range"></div><div class="pe-desc">0.5%–5% of total lifetime cost</div></div>
+          <div class="pe-card"><div class="pe-name">Why this price works</div><div class="pe-val" id="p-why-val"></div><div class="pe-desc" id="p-why-desc"></div></div>
+        </div>
+        <p class="pricing-note" id="p-note"></p>
+      </div>
+
+      <div class="first-step">
+        <div class="fs-label">Your first step this week</div>
+        <p class="fs-text" id="bp-first-step"></p>
+      </div>
+      <button class="reset-btn" onclick="restart()">Start over</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const state={rate:null,hours:null,goal:null,model:null,profession:null};
+
+  setTimeout(function(){
+    document.getElementById('rate').addEventListener('input',function(){document.getElementById('btn0').disabled=!parseFloat(this.value);});
+    document.getElementById('goal').addEventListener('input',function(){document.getElementById('btn2').disabled=!parseFloat(this.value);});
+    document.getElementById('profession').addEventListener('input',function(){document.getElementById('btn4').disabled=this.value.trim().length<3;});
+    document.getElementById('rate').addEventListener('keydown',function(e){if(e.key==='Enter'&&parseFloat(this.value))go(1);});
+    document.getElementById('goal').addEventListener('keydown',function(e){if(e.key==='Enter'&&parseFloat(this.value))go(3);});
+  },100);
+
+  function go(n){
+    if(n===1){const v=parseFloat(document.getElementById('rate').value);if(!v||v<1)return;state.rate=v;}
+    if(n===3){const v=parseFloat(document.getElementById('goal').value);if(!v||v<1)return;state.goal=v;}
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('s'+n).classList.add('active');
+    for(let i=0;i<=n;i++)document.getElementById('pd'+i).classList.add('done');
+  }
+
+  function selOpt(key,val,el){
+    el.parentElement.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+    el.classList.add('sel');state[key]=val;
+    if(key==='hours')document.getElementById('btn1').disabled=false;
+    if(key==='model')document.getElementById('btn3').disabled=false;
+  }
+
+  function fillEx(v){document.getElementById('profession').value=v;document.getElementById('btn4').disabled=false;}
+
+  function fmt(n){
+    if(n>=1000000)return '$'+(n/1000000).toFixed(1)+'M';
+    if(n>=1000)return '$'+Math.round(n/1000)+'K';
+    return '$'+Math.round(n);
+  }
+
+  function showResults(){
+    const profession=document.getElementById('profession').value.trim();
+    if(!profession||profession.length<3)return;
+    state.profession=profession;
+    const{rate,hours,goal,model}=state;
+    const WEEKS=48;
+    const ceiling=Math.round(rate*hours*WEEKS);
+    const gap=Math.max(0,goal-ceiling);
+    const locked=100-model;
+    const hrsNeeded=Math.round(goal/(rate*WEEKS));
+    const worthPerHr=Math.round(goal/(hours*WEEKS));
+    const reclaimHrs=Math.max(2,hours-Math.round(hours*0.25));
+
+    document.getElementById('r-ceiling').textContent=fmt(ceiling);
+    document.getElementById('r-goal').textContent=fmt(goal);
+    document.getElementById('r-hrs-needed').textContent=hrsNeeded+' hrs/wk';
+    document.getElementById('r-hrs-sub').textContent=hrsNeeded>hours?'That\'s '+(hrsNeeded-hours)+' more hours than you currently work — every single week':'Nearly your full current load, with zero room to grow';
+    document.getElementById('r-worth').textContent=fmt(worthPerHr)+'/hr';
+    document.getElementById('r-current-rate').textContent='$'+rate;
+    document.getElementById('r-reclaim').textContent=reclaimHrs+' hrs/wk';
+    document.getElementById('trans-profession').textContent=profession;
+
+    const goalAbove=goal>ceiling;
+    document.getElementById('res-title').textContent=goalAbove?'Your goal is above what your current model will ever allow.':'You could reach your goal — but one slow month ends it.';
+    document.getElementById('res-sub').textContent=goalAbove?'To hit '+fmt(goal)+' at your current rate you\'d need to work '+hrsNeeded+' hours every week. That\'s not a hustle problem. It\'s a model problem.':'Your time is worth '+fmt(worthPerHr)+'/hr at your goal — you\'re currently at $'+rate+'. And at '+locked+'% time-locked, your income stops the moment you do.';
+
+    const maxV=Math.max(ceiling,goal);
+    const ceilPct=Math.round((Math.min(ceiling,goal)/maxV)*85);
+    setTimeout(()=>{
+      document.getElementById('gap-fill-goal').style.width='85%';
+      document.getElementById('gap-fill-ceiling').style.width=ceilPct+'%';
+      document.getElementById('gap-marker-ceiling').style.left=ceilPct+'%';
+      document.getElementById('gap-marker-goal').style.left='85%';
+    },150);
+    document.getElementById('gap-label-ceiling').textContent='Current ceiling: '+fmt(ceiling);
+    document.getElementById('gap-label-goal').textContent='Income goal: '+fmt(goal);
+    document.getElementById('gap-amount').textContent=gap>0?fmt(gap):'At ceiling';
+    document.getElementById('gap-sub-text').textContent=gap>0?'No rate increase or extra hours closes a '+fmt(gap)+' gap — only a different model does.':'You\'re at your ceiling. Every dollar still requires your direct presence.';
+
+    const lev=model;
+    let lc,lb,ld;
+    if(lev===0){lc='#A32D2D';lb='#FCEBEB';ld='Fully time-locked. Every dollar requires your presence. One slow month and the whole thing stops.';}
+    else if(lev<=25){lc='#854F0B';lb='#FAEEDA';ld='Mostly time-locked. You\'ve started the shift, but most of your income still depends on your hours.';}
+    else if(lev<=50){lc='#0F6E56';lb='#E1F5EE';ld='Balanced. Half your income has leverage. The other half is a ceiling waiting to press down on you.';}
+    else{lc='#185FA5';lb='#E6F1FB';ld='Good leverage. Most income doesn\'t require your direct time — now it\'s about compounding what\'s working.';}
+    const circ=document.getElementById('lev-circle');
+    circ.style.background=lb;circ.style.color=lc;circ.textContent=lev;
+    document.getElementById('lev-desc').textContent=ld;
+
+    document.getElementById('insight-text').textContent=goalAbove?'Your time is worth '+fmt(worthPerHr)+'/hr at your goal — you\'re currently earning $'+rate+'/hr. That '+fmt(worthPerHr-rate)+'/hr gap isn\'t closed by working harder or raising your rate alone. It closes when your expertise earns beyond the hours you work. A scalable asset gives you back '+reclaimHrs+' hours a week — and keeps earning while you\'re in them.':'Your time is worth '+fmt(worthPerHr)+'/hr at your goal — close to your current rate, but 100% of it requires you to show up. A scalable asset gives you back '+reclaimHrs+' hours a week and keeps earning the weeks you don\'t.';
+
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('s-results').classList.add('active');
+    for(let i=0;i<=5;i++)document.getElementById('pd'+i).classList.add('done');
+    generateBlueprint(profession,rate,hours,goal,ceiling,gap,locked,hrsNeeded,worthPerHr,reclaimHrs);
+  }
+
+  const msgs=['Analysing your expertise...','Mapping your process to the 4 C\'s...','Building your value-based pricing...','Calculating your week comparison...','Finalising your blueprint...'];
+
+  function generateBlueprint(profession,rate,hours,goal,ceiling,gap,locked,hrsNeeded,worthPerHr,reclaimHrs){
+    document.getElementById('spinner-wrap').style.display='block';
+    let i=0;
+    const iv=setInterval(()=>{i=(i+1)%msgs.length;document.getElementById('spin-text').textContent=msgs[i];},2200);
+
+    const prompt=`You are a business strategist for Authority.io. Their model: 4 C's — Curriculum, Coaching, Community — validated via a one-time live POP (Prototype of Program), then evergreen. CRITICAL RULES: No mention of building a second program. No mention of keeping 1:1 clients — the program replaces 1:1 work entirely. No time-bound language. Program is evergreen after the POP. No mention of sales calls. Philosophy: Mastery → Method → Mentorship.
+
+Value-based pricing: price = 0.5%–5% of (annual cost of problem × years struggling). Price reflects outcome potency — not program length.
+
+Profession: "${profession}"
+Current rate: $${rate}/hr | Weekly hours: ${hours} | Ceiling: $${ceiling.toLocaleString()} | Goal: $${goal.toLocaleString()} | Gap: $${gap.toLocaleString()} | Time-locked: ${locked}% | Hrs needed: ${hrsNeeded}/wk | Time worth: $${worthPerHr}/hr | Reclaim: ${reclaimHrs} hrs/wk
+
+VOICE: Grounded mentor. Every sentence specific to their profession. No hype. No "passive income."
+
+Return ONLY valid JSON, no markdown:
+
+{
+  "headline": "12-15 words specific to profession naming the shift from time-locked to scalable",
+  "summary": "2-3 sentences referencing their $${worthPerHr}/hr time value and ${reclaimHrs} hrs/wk reclaim. Specific to profession. No mention of 1:1 continuing.",
+  "fourCs": {
+    "curriculum": "2 sentences — 1:1 process as curriculum, specific methodology named.",
+    "coaching": "2 sentences — group coaching replacing 1:1 entirely, specific to their delivery.",
+    "community": "2 sentences — peer community for their client type and why it matters.",
+    "pop": "2 sentences — one-time live POP to validate before going evergreen. Why it matters for their profession. No mention of future programs."
+  },
+  "assetName": "1-2 sentences — specific scalable asset, audience, transformation. No time duration. No 1:1 mention.",
+  "clientSize": "e.g. '15–20 founding clients'",
+  "weekComparison": {
+    "nowSessions": "current weekly 1:1 hours",
+    "nowAdmin": "estimated admin hrs/wk",
+    "nowMktg": "estimated marketing hrs/wk",
+    "nowIncome": "weekly income at ceiling",
+    "afterCalls": "group coaching hrs/wk",
+    "afterDelivery": "program delivery + async hrs/wk",
+    "afterIncome": "estimated weekly program income at scale",
+    "afterStop": "Continues earning",
+    "note": "2 sentences on the weekly shift. Reference the ${reclaimHrs} reclaimed hours and what that means for someone in their profession."
+  },
+  "mastery": {"title": "5 words max", "body": "2 sentences on their specific expertise."},
+  "method": {"title": "5 words max", "body": "2 sentences on 1:1 process becoming curriculum."},
+  "mentorship": {"title": "5 words max", "body": "2 sentences on group replacing 1:1 entirely."},
+  "valuePricing": {
+    "problemCost": "Annual cost of client problem — specific dollar estimate.",
+    "yearsStruggling": "Typical years struggling.",
+    "totalCost": "Range of total lifetime cost.",
+    "priceRange": "0.5%–5% value-based range.",
+    "recommendedPrice": "Specific recommended POP price.",
+    "whyItWorks": "One sentence — outcome value not program length.",
+    "pricingNote": "2-3 sentences income math showing path from $${ceiling.toLocaleString()} ceiling to $${goal.toLocaleString()} goal."
+  },
+  "firstStep": "One concrete action this week. Specific to profession. Not define your niche."
+}`;
+
+    fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,messages:[{role:'user',content:prompt}]})
+    })
+    .then(r=>r.json())
+    .then(data=>{
+      clearInterval(iv);
+      const raw=data.content&&data.content[0]&&data.content[0].text;
+      if(!raw)throw new Error('empty');
+      const bp=JSON.parse(raw.replace(/```json|```/g,'').trim());
+      renderBP(bp);
+    })
+    .catch(()=>{
+      clearInterval(iv);
+      document.getElementById('spinner-wrap').style.display='none';
+      sendPrompt('Generate Authority Audit blueprint for: '+profession+'. Rate $'+rate+'/hr, '+hours+' hrs/wk, goal $'+goal+'. Worth/hr: $'+worthPerHr+'. Reclaim: '+reclaimHrs+' hrs/wk. Include value-based pricing and week comparison. No time-bound language. No 1:1 clients after launch. No second program.');
+    });
+  }
+
+  function renderBP(bp){
+    document.getElementById('bp-headline').textContent=bp.headline||'';
+    document.getElementById('bp-summary').textContent=bp.summary||'';
+    document.getElementById('c-curriculum').textContent=bp.fourCs?.curriculum||'';
+    document.getElementById('c-coaching').textContent=bp.fourCs?.coaching||'';
+    document.getElementById('c-community').textContent=bp.fourCs?.community||'';
+    document.getElementById('c-pop').textContent=bp.fourCs?.pop||'';
+    document.getElementById('bp-asset').textContent=bp.assetName||'';
+    document.getElementById('bp-size').textContent=bp.clientSize||'';
+    document.getElementById('bp-price').textContent=bp.valuePricing?.recommendedPrice||'';
+    document.getElementById('m-title').textContent=bp.mastery?.title||'';
+    document.getElementById('m-body').textContent=bp.mastery?.body||'';
+    document.getElementById('me-title').textContent=bp.method?.title||'';
+    document.getElementById('me-body').textContent=bp.method?.body||'';
+    document.getElementById('mn-title').textContent=bp.mentorship?.title||'';
+    document.getElementById('mn-body').textContent=bp.mentorship?.body||'';
+    const wk=bp.weekComparison||{};
+    document.getElementById('w-now-sessions').textContent=wk.nowSessions||'';
+    document.getElementById('w-now-admin').textContent=wk.nowAdmin||'';
+    document.getElementById('w-now-mktg').textContent=wk.nowMktg||'';
+    document.getElementById('w-now-income').textContent=wk.nowIncome||'';
+    document.getElementById('w-after-calls').textContent=wk.afterCalls||'';
+    document.getElementById('w-after-delivery').textContent=wk.afterDelivery||'';
+    document.getElementById('w-after-income').textContent=wk.afterIncome||'';
+    document.getElementById('w-after-stop').textContent=wk.afterStop||'Continues earning';
+    document.getElementById('week-note').textContent=wk.note||'';
+    document.getElementById('p-cost').textContent=bp.valuePricing?.problemCost||'';
+    document.getElementById('p-cost-desc').textContent=(bp.valuePricing?.yearsStruggling||'')+' avg. years struggling';
+    document.getElementById('p-range').textContent=bp.valuePricing?.priceRange||'';
+    document.getElementById('p-why-val').textContent=bp.valuePricing?.recommendedPrice||'';
+    document.getElementById('p-why-desc').textContent=bp.valuePricing?.whyItWorks||'';
+    document.getElementById('p-note').textContent=bp.valuePricing?.pricingNote||'';
+    document.getElementById('bp-first-step').textContent=bp.firstStep||'';
+    document.getElementById('spinner-wrap').style.display='none';
+    document.getElementById('blueprint-section').style.display='block';
+  }
+
+  function restart(){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('s0').classList.add('active');
+    for(let i=0;i<=5;i++)document.getElementById('pd'+i).classList.remove('done');
+    document.getElementById('pd0').classList.add('done');
+    ['rate','goal','profession'].forEach(id=>document.getElementById(id).value='');
+    document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+    ['btn0','btn1','btn2','btn3','btn4'].forEach(id=>document.getElementById(id).disabled=true);
+    document.getElementById('blueprint-section').style.display='none';
+    document.getElementById('spinner-wrap').style.display='none';
+    Object.keys(state).forEach(k=>state[k]=null);
+  }
+</script>

@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<title>The Authority Audit — 5-minute income ceiling diagnostic</title>
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<div class="page">
+  <div class="aa">
+
+    <div class="print-header">
+      <img src="./assets/logo.svg" alt="authority.io" />
+      <div class="ph-text">Your Scalable Asset Blueprint — prepared for <span id="print-name"></span></div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="pd done" id="pd0"></div>
+      <div class="pd" id="pd1"></div>
+      <div class="pd" id="pd2"></div>
+      <div class="pd" id="pd3"></div>
+      <div class="pd" id="pd4"></div>
+      <div class="pd" id="pd5"></div>
+    </div>
+
+    <!-- Step 0: opening + rate -->
+    <div class="step active" id="s0">
+      <img class="aa-logo-img" src="./assets/logo.svg" alt="authority.io" />
+      <div class="aa-name">The Authority Audit</div>
+      <div class="aa-tagline">The 5-minute diagnostic for experts who want to earn more &amp; work less</div>
+      <div class="aa-sub-text">Answer 5 quick questions to see your exact income ceiling. Then unlock your personalised scalable asset blueprint — free.</div>
+      <div class="tag">Step 1 of 5</div>
+      <div class="q-title">What do you charge per hour or session?</div>
+      <div class="q-sub">Use your effective rate — total revenue ÷ total hours worked.</div>
+      <div class="input-row"><span class="prefix">$</span><input class="big-input" type="number" id="rate" placeholder="250" min="1" inputmode="decimal" /></div>
+      <button class="next-btn" id="btn0" onclick="AA.go(1)" disabled>Next →</button>
+    </div>
+
+    <!-- Step 1: weekly hours -->
+    <div class="step" id="s1">
+      <div class="tag">Step 2 of 5</div>
+      <div class="q-title">How many client-facing hours do you work per week?</div>
+      <div class="q-sub">Include delivery, consulting, coaching — not admin or marketing.</div>
+      <div class="opt-grid">
+        <button class="opt" onclick="AA.selOpt('hours',10,this)">Under 10 hrs<span class="opt-sub">Part-time delivery</span></button>
+        <button class="opt" onclick="AA.selOpt('hours',20,this)">10–20 hrs<span class="opt-sub">Balanced load</span></button>
+        <button class="opt" onclick="AA.selOpt('hours',30,this)">20–35 hrs<span class="opt-sub">Near capacity</span></button>
+        <button class="opt" onclick="AA.selOpt('hours',40,this)">35+ hrs<span class="opt-sub">Fully maxed out</span></button>
+      </div>
+      <button class="next-btn" id="btn1" disabled onclick="AA.go(2)">Next →</button>
+    </div>
+
+    <!-- Step 2: income goal -->
+    <div class="step" id="s2">
+      <div class="tag">Step 3 of 5</div>
+      <div class="q-title">What's your annual income goal?</div>
+      <div class="q-sub">The number that would genuinely change how you operate.</div>
+      <div class="input-row"><span class="prefix">$</span><input class="big-input" type="number" id="goal" placeholder="500,000" min="1" inputmode="decimal" /></div>
+      <button class="next-btn" id="btn2" onclick="AA.go(3)" disabled>Next →</button>
+    </div>
+
+    <!-- Step 3: business model -->
+    <div class="step" id="s3">
+      <div class="tag">Step 4 of 5</div>
+      <div class="q-title">What best describes your current model?</div>
+      <div class="q-sub">Be honest — this determines your leverage score.</div>
+      <div class="opt-grid">
+        <button class="opt" onclick="AA.selOpt('model',0,this)">100% 1:1 clients<span class="opt-sub">Pure time trade</span></button>
+        <button class="opt" onclick="AA.selOpt('model',25,this)">Mostly 1:1, some group<span class="opt-sub">Starting to scale</span></button>
+        <button class="opt" onclick="AA.selOpt('model',50,this)">Mix of 1:1 and programs<span class="opt-sub">Building leverage</span></button>
+        <button class="opt" onclick="AA.selOpt('model',75,this)">Programs + some 1:1<span class="opt-sub">Mostly scalable</span></button>
+      </div>
+      <button class="next-btn" id="btn3" disabled onclick="AA.go(4)">Next →</button>
+    </div>
+
+    <!-- Step 4: profession -->
+    <div class="step" id="s4">
+      <div class="tag">Step 5 of 5</div>
+      <div class="q-title">What's your profession or area of expertise?</div>
+      <div class="q-sub">Be specific — this is what your scalable asset will be built around.</div>
+      <input class="text-input" type="text" id="profession" placeholder="e.g. Functional medicine doctor, Executive leadership coach..." maxlength="120" />
+      <div class="examples">
+        <span style="font-size:12px;color:var(--color-text-muted)">Try:</span>
+        <button class="ex-chip" onclick="AA.fillEx('Executive leadership coach')">Executive leadership coach</button>
+        <button class="ex-chip" onclick="AA.fillEx('Functional medicine doctor')">Functional medicine doctor</button>
+        <button class="ex-chip" onclick="AA.fillEx('Divorce attorney')">Divorce attorney</button>
+        <button class="ex-chip" onclick="AA.fillEx('Financial planner for physicians')">Financial planner for physicians</button>
+      </div>
+      <button class="next-btn" id="btn4" disabled onclick="AA.showResults()">See my results →</button>
+    </div>
+
+    <!-- Results + gate + blueprint -->
+    <div class="step" id="s-results">
+      <div class="tag">Your income ceiling report</div>
+      <div class="q-title" id="res-title"></div>
+      <div class="q-sub" id="res-sub"></div>
+
+      <div class="metric-grid-2">
+        <div class="mc"><div class="mc-label">Your income ceiling</div><div class="mc-val red" id="r-ceiling"></div><div class="mc-sub">max at current model</div></div>
+        <div class="mc"><div class="mc-label">Your income goal</div><div class="mc-val" id="r-goal"></div><div class="mc-sub">target you set</div></div>
+      </div>
+
+      <div class="metric-grid-3">
+        <div class="mc">
+          <div class="mc-label">Hours to hit your goal</div>
+          <div class="mc-val red" id="r-hrs-needed"></div>
+          <div class="mc-sub" id="r-hrs-sub"></div>
+        </div>
+        <div class="mc">
+          <div class="mc-label">What your time is actually worth</div>
+          <div class="mc-val gold" id="r-worth"></div>
+          <div class="mc-sub">per hour at your goal — vs your current <span id="r-current-rate"></span>/hr</div>
+        </div>
+        <div class="mc">
+          <div class="mc-label">Hours you could reclaim</div>
+          <div class="mc-val green" id="r-reclaim"></div>
+          <div class="mc-sub">per week with a scalable asset doing the work</div>
+        </div>
+      </div>
+
+      <div class="gap-visual">
+        <div class="gap-visual-label">Your income gap</div>
+        <div class="gap-track">
+          <div class="gap-fill-goal" id="gap-fill-goal" style="width:0%"></div>
+          <div class="gap-fill-ceiling" id="gap-fill-ceiling" style="width:0%"></div>
+          <div class="gap-marker ceiling" id="gap-marker-ceiling" style="left:0%"></div>
+          <div class="gap-marker goal" id="gap-marker-goal" style="left:0%"></div>
+        </div>
+        <div class="gap-labels">
+          <div class="gap-label-item"><div class="gap-dot" style="background:var(--color-danger)"></div><span id="gap-label-ceiling"></span></div>
+          <div class="gap-label-item"><div class="gap-dot" style="background:var(--dark-accent)"></div><span id="gap-label-goal"></span></div>
+        </div>
+        <div class="gap-amount-box">
+          <div>
+            <div class="gap-amount-label">Gap your current model can never close</div>
+            <div class="gap-amount-sub" id="gap-sub-text"></div>
+          </div>
+          <div class="gap-amount-val" id="gap-amount"></div>
+        </div>
+      </div>
+
+      <div class="lev-block">
+        <div class="lev-title">Your leverage score</div>
+        <div class="lev-row">
+          <div class="lev-circle" id="lev-circle"></div>
+          <div class="lev-desc" id="lev-desc"></div>
+        </div>
+      </div>
+
+      <div class="insight"><p id="insight-text"></p></div>
+
+      <!-- Email gate: hard gate before blueprint -->
+      <div class="gate-box" id="gate-box">
+        <div class="gate-icon">🔓</div>
+        <div class="gate-title">Unlock your personalised scalable asset blueprint</div>
+        <div class="gate-sub">Enter your details below and we'll generate your custom blueprint — showing exactly how your expertise becomes a scalable asset — plus a downloadable PDF of your full report.</div>
+        <div class="gate-fields">
+          <input class="gate-input" type="text" id="gate-name" placeholder="First name" autocomplete="given-name" />
+          <input class="gate-input" type="email" id="gate-email" placeholder="Email address" autocomplete="email" />
+        </div>
+        <button class="gate-btn" id="gate-btn" onclick="AA.submitGate()">Unlock my blueprint →</button>
+        <div class="gate-privacy">No spam. Unsubscribe anytime.</div>
+      </div>
+
+      <div class="transition-box" id="transition-box" style="display:none">
+        <p>Here's your scalable asset blueprint — built specifically for <span id="trans-profession"></span>.</p>
+      </div>
+
+      <div class="spinner-wrap" id="spinner-wrap">
+        <div class="spinner-inner"><div class="spinner"></div><div class="spin-text" id="spin-text">Analysing your expertise...</div></div>
+      </div>
+
+      <div id="blueprint-section" style="display:none">
+        <div class="bp-header">
+          <div class="bp-tag">Your scalable asset blueprint</div>
+          <p class="bp-headline" id="bp-headline"></p>
+        </div>
+        <p class="bp-summary" id="bp-summary"></p>
+
+        <div class="four-cs">
+          <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Curriculum</div><div class="c-body" id="c-curriculum"></div></div>
+          <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Coaching</div><div class="c-body" id="c-coaching"></div></div>
+          <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Community</div><div class="c-body" id="c-community"></div></div>
+          <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">POP Launch</div><div class="c-body" id="c-pop"></div></div>
+        </div>
+
+        <div class="asset-box">
+          <div class="asset-label">Your scalable asset</div>
+          <div class="asset-name" id="bp-asset"></div>
+          <div>
+            <span class="pill" id="bp-size"></span>
+            <span class="pill" id="bp-price"></span>
+            <span class="pill">Evergreen enrollment</span>
+          </div>
+        </div>
+
+        <div class="mmm-row">
+          <div class="mmm-card"><div class="mmm-step">Mastery</div><div class="mmm-title" id="m-title"></div><div class="mmm-body" id="m-body"></div></div>
+          <div class="mmm-card"><div class="mmm-step">Method</div><div class="mmm-title" id="me-title"></div><div class="mmm-body" id="me-body"></div></div>
+          <div class="mmm-card"><div class="mmm-step">Mentorship</div><div class="mmm-title" id="mn-title"></div><div class="mmm-body" id="mn-body"></div></div>
+        </div>
+
+        <div class="week-box">
+          <div class="week-label">What your week looks like</div>
+          <div class="week-compare">
+            <div class="week-col">
+              <div class="week-col-label">Right now</div>
+              <div class="week-item">1:1 client sessions<span class="week-val" id="w-now-sessions"></span></div>
+              <div class="week-item">Admin + prep<span class="week-val" id="w-now-admin"></span></div>
+              <div class="week-item">Marketing + outreach<span class="week-val" id="w-now-mktg"></span></div>
+              <div class="week-item">Weekly income<span class="week-val" id="w-now-income"></span></div>
+              <div class="week-item">If you take a week off<span class="week-val danger">$0</span></div>
+            </div>
+            <div class="week-col after">
+              <div class="week-col-label">With your scalable asset</div>
+              <div class="week-item">Group coaching calls<span class="week-val" id="w-after-calls"></span></div>
+              <div class="week-item">Program delivery + async<span class="week-val" id="w-after-delivery"></span></div>
+              <div class="week-item">Weekly program income<span class="week-val" id="w-after-income"></span></div>
+              <div class="week-item">If you take a week off<span class="week-val good" id="w-after-stop"></span></div>
+            </div>
+          </div>
+          <p class="week-note" id="week-note"></p>
+        </div>
+
+        <div class="pricing-box">
+          <div class="pricing-label">Value-based pricing breakdown</div>
+          <div class="price-eq-row">
+            <div class="pe-card"><div class="pe-name">Cost of the problem</div><div class="pe-val" id="p-cost"></div><div class="pe-desc" id="p-cost-desc"></div></div>
+            <div class="pe-card hi"><div class="pe-name">Recommended price range</div><div class="pe-val" id="p-range"></div><div class="pe-desc">0.5%–5% of total lifetime cost</div></div>
+            <div class="pe-card"><div class="pe-name">Why this price works</div><div class="pe-val" id="p-why-val"></div><div class="pe-desc" id="p-why-desc"></div></div>
+          </div>
+          <p class="pricing-note" id="p-note"></p>
+        </div>
+
+        <div class="next-steps-block">
+          <div class="next-steps-top">
+            <div class="ns-label">Your next steps this week</div>
+            <p class="ns-title" id="ns-title"></p>
+            <p class="ns-body" id="ns-body"></p>
+          </div>
+          <div class="next-steps-bottom">
+            <div class="cta-label">Ready to build this?</div>
+            <p class="cta-heading">Book a complimentary consultation with our team — we'll show you exactly how to turn your expertise into a scalable online education business.</p>
+            <a class="cta-btn" id="cta-book" href="#" target="_blank" rel="noopener" onclick="AA.trackEvent('cta_click')">Book my free consultation →</a>
+          </div>
+        </div>
+
+        <button class="pdf-btn" onclick="AA.downloadPdf()">Download as PDF</button>
+        <button class="reset-btn" onclick="AA.restart()">Start over</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>

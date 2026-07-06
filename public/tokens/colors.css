@@ -1,0 +1,61 @@
+/* ============================================================
+   AUTHORITY DS — COLOR TOKENS
+   Per brand guidelines: primary gold, near-black dark accent,
+   light gold fill, semantic red/green, clean white surfaces.
+   ============================================================ */
+
+:root {
+  /* --- brand spec (exact hex, do not round) --- */
+  --gold-primary:     #B4882A;
+  --dark-accent:      #1a1a1a;
+  --gold-fill-light:  #FAEEDA;   /* pills, callouts, gates, focus rings */
+  --gold-text:        #633806;  /* gold text on light */
+  --gold-text-deep:   #854F0B;  /* deep gold text */
+  --danger:           #A32D2D;
+  --success:          #3B6D11;
+
+  /* --- neutrals (clean white / off-white surfaces) --- */
+  --white:            #FFFFFF;
+  --paper:            #FAF9F7;   /* off-white page bg */
+  --paper-dim:        #F2F0EC;   /* subtle section tint */
+  --line:             #E7E3DC;
+
+  --ink-900: var(--dark-accent);
+  --ink-700: #3A3A3A;
+  --ink-500: #6B6B6B;
+  --ink-300: #9B9B9B;
+  --ink-200: #C7C4BE;
+  --ink-100: #E7E3DC;
+
+  /* --- semantic aliases --- */
+  --color-bg:             var(--paper);
+  --color-bg-dim:         var(--paper-dim);
+  --color-bg-dark:        var(--dark-accent);
+  --color-bg-dark-raised: #262626;
+  --color-surface:        var(--white);
+  --color-surface-dark:   #242424;
+
+  --color-text:           var(--ink-900);
+  --color-text-muted:     var(--ink-500);
+  --color-text-faint:     var(--ink-300);
+  --color-text-on-dark:       var(--white);
+  --color-text-on-dark-muted: var(--ink-200);
+
+  --color-border:      var(--line);
+  --color-border-dark: #3A3A3A;
+
+  --color-accent:        var(--gold-primary);
+  --color-accent-hover:  #9C7423;
+  --color-accent-active: #84611D;
+  --color-accent-tint:   var(--gold-fill-light);
+  --color-accent-text:      var(--gold-text);
+  --color-accent-text-deep: var(--gold-text-deep);
+  --color-on-accent:     var(--white);
+
+  --color-danger:      var(--danger);
+  --color-danger-tint: #F5E1E1;
+  --color-success:     var(--success);
+  --color-success-tint: #E4EDDC;
+
+  --color-focus-ring: rgba(180, 136, 42, 0.45);
+}
