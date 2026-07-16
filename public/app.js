@@ -2,11 +2,15 @@
   const state = { rate: null, hours: null, goal: null, model: null, profession: null };
   const results = {};
   let gateSubmitted = false;
-  let bookingUrl = '#';
+  let bookingUrl = 'https://www.authoritydotio.com/masterclass-schedule63952453';
 
   function trackEvent(name, payload) {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(Object.assign({ event: name }, payload || {}));
+  }
+
+  function setDotDone(i, done) {
+    document.querySelectorAll('[data-pd="' + i + '"]').forEach((el) => el.classList.toggle('done', done));
   }
 
   fetch('/api/config')
@@ -20,16 +24,12 @@
   window.addEventListener('DOMContentLoaded', function () {
     const rateEl = document.getElementById('rate');
     const goalEl = document.getElementById('goal');
-    const professionEl = document.getElementById('profession');
 
     rateEl.addEventListener('input', function () {
       document.getElementById('btn0').disabled = !(parseFloat(this.value) > 0);
     });
     goalEl.addEventListener('input', function () {
       document.getElementById('btn2').disabled = !(parseFloat(this.value) > 0);
-    });
-    professionEl.addEventListener('input', function () {
-      document.getElementById('btn4').disabled = this.value.trim().length < 3;
     });
     rateEl.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && parseFloat(this.value) > 0) go(1);
@@ -52,8 +52,14 @@
     }
     document.querySelectorAll('.step').forEach((s) => s.classList.remove('active'));
     document.getElementById('s' + n).classList.add('active');
-    for (let i = 0; i <= n; i++) document.getElementById('pd' + i).classList.add('done');
+    for (let i = 0; i <= n; i++) setDotDone(i, true);
     trackEvent('quiz_step_complete', { step: n });
+  }
+
+  function goBack(n) {
+    document.querySelectorAll('.step').forEach((s) => s.classList.remove('active'));
+    document.getElementById('s' + n).classList.add('active');
+    trackEvent('quiz_step_back', { step: n });
   }
 
   function selOpt(key, val, el) {
@@ -65,9 +71,7 @@
   }
 
   function fillEx(v) {
-    const el = document.getElementById('profession');
-    el.value = v;
-    document.getElementById('btn4').disabled = false;
+    document.getElementById('profession').value = v;
   }
 
   function fmt(n) {
@@ -76,11 +80,8 @@
     return '$' + Math.round(n);
   }
 
-  function showResults() {
-    const profession = document.getElementById('profession').value.trim();
-    if (profession.length < 3) return;
-    state.profession = profession;
-    const { rate, hours, goal, model } = state;
+  function computeResults() {
+    const { rate, hours, goal, model, profession } = state;
     const WEEKS = 48;
     const ceiling = Math.round(rate * hours * WEEKS);
     const gap = Math.max(0, goal - ceiling);
@@ -101,7 +102,6 @@
     document.getElementById('r-worth').textContent = fmt(worthPerHr) + '/hr';
     document.getElementById('r-current-rate').textContent = '$' + rate;
     document.getElementById('r-reclaim').textContent = reclaimHrs + ' hrs/wk';
-    document.getElementById('trans-profession').textContent = profession;
     document.getElementById('print-name').textContent = profession;
 
     const goalAbove = goal > ceiling;
@@ -153,28 +153,29 @@
       ? 'Your time is worth ' + fmt(worthPerHr) + '/hr at your goal — you\'re currently earning $' + rate + '/hr. That ' + fmt(worthPerHr - rate) + "/hr gap isn't closed by working harder or raising your rate alone. It closes when your expertise earns beyond the hours you work. A scalable asset gives you back " + reclaimHrs + ' hours a week — and keeps earning while you\'re in them.'
       : 'Your time is worth ' + fmt(worthPerHr) + '/hr at your goal — close to your current rate, but 100% of it requires you to show up. A scalable asset gives you back ' + reclaimHrs + " hours a week and keeps earning the weeks you don't.";
 
-    document.querySelectorAll('.step').forEach((s) => s.classList.remove('active'));
-    document.getElementById('s-results').classList.add('active');
-    for (let i = 0; i <= 5; i++) {
-      if (i < 5) document.getElementById('pd' + i).classList.add('done');
-    }
     trackEvent('results_view', { profession, ceiling, goal, gap, leverageScore: model });
   }
 
   function submitGate() {
     const btn = document.getElementById('gate-btn');
+    const profession = document.getElementById('profession').value.trim();
     const name = document.getElementById('gate-name').value.trim();
     const email = document.getElementById('gate-email').value.trim();
     const validEmail = /\S+@\S+\.\S+/.test(email);
 
-    if (!name || !validEmail) {
+    let errorMsg = null;
+    if (profession.length < 3) errorMsg = 'Please enter your profession above →';
+    else if (!name) errorMsg = 'Please enter your first name →';
+    else if (!validEmail) errorMsg = 'Please enter a valid email →';
+
+    if (errorMsg) {
       const original = btn.textContent;
-      btn.textContent = 'Please enter your name and a valid email →';
+      btn.textContent = errorMsg;
       btn.classList.add('err');
       setTimeout(() => {
         btn.textContent = original;
         btn.classList.remove('err');
-      }, 2000);
+      }, 2200);
       return;
     }
     if (gateSubmitted) return;
@@ -182,7 +183,10 @@
     btn.disabled = true;
     btn.textContent = 'Unlocking your blueprint...';
 
-    const { rate, hours, goal, model, profession } = state;
+    state.profession = profession;
+    computeResults();
+
+    const { rate, hours, goal, model } = state;
     const payload = {
       firstName: name,
       email,
@@ -205,9 +209,10 @@
       body: JSON.stringify(payload),
     }).catch(() => {}).finally(() => {
       trackEvent('email_submit', { profession });
-      document.getElementById('gate-box').style.display = 'none';
+      document.querySelectorAll('.step').forEach((s) => s.classList.remove('active'));
+      document.getElementById('s-results').classList.add('active');
       document.getElementById('transition-box').style.display = 'block';
-      for (let i = 0; i <= 5; i++) document.getElementById('pd' + i).classList.add('done');
+      for (let i = 0; i <= 5; i++) setDotDone(i, true);
       generateBlueprint(payload);
     });
   }
@@ -330,19 +335,21 @@
   function restart() {
     document.querySelectorAll('.step').forEach((s) => s.classList.remove('active'));
     document.getElementById('s0').classList.add('active');
-    for (let i = 0; i <= 5; i++) document.getElementById('pd' + i).classList.remove('done');
-    document.getElementById('pd0').classList.add('done');
+    for (let i = 0; i <= 5; i++) setDotDone(i, false);
+    setDotDone(0, true);
     ['rate', 'goal', 'profession'].forEach((id) => (document.getElementById(id).value = ''));
     ['gate-name', 'gate-email'].forEach((id) => (document.getElementById(id).value = ''));
     document.querySelectorAll('.opt').forEach((b) => b.classList.remove('sel'));
-    ['btn0', 'btn1', 'btn2', 'btn3', 'btn4'].forEach((id) => (document.getElementById(id).disabled = true));
+    ['btn0', 'btn1', 'btn2', 'btn3'].forEach((id) => (document.getElementById(id).disabled = true));
     document.getElementById('blueprint-section').style.display = 'none';
     document.getElementById('spinner-wrap').style.display = 'none';
     document.getElementById('transition-box').style.display = 'none';
-    document.getElementById('gate-box').style.display = 'block';
+    document.getElementById('gate-btn').disabled = false;
+    document.getElementById('gate-btn').textContent = 'Unlock my blueprint →';
+    document.getElementById('gate-btn').classList.remove('err');
     gateSubmitted = false;
     Object.keys(state).forEach((k) => (state[k] = null));
   }
 
-  window.AA = { go, selOpt, fillEx, showResults, submitGate, downloadPdf, restart, trackEvent };
+  window.AA = { go, goBack, selOpt, fillEx, submitGate, downloadPdf, restart, trackEvent };
 })();

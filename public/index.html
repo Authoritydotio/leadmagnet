@@ -11,22 +11,22 @@
   <div class="aa">
 
     <div class="print-header">
-      <img src="./assets/logo.svg" alt="authority.io" />
+      <img src="./assets/logo-black.svg" alt="authority.io" />
       <div class="ph-text">Your Scalable Asset Blueprint — prepared for <span id="print-name"></span></div>
     </div>
 
-    <div class="progress-bar">
-      <div class="pd done" id="pd0"></div>
-      <div class="pd" id="pd1"></div>
-      <div class="pd" id="pd2"></div>
-      <div class="pd" id="pd3"></div>
-      <div class="pd" id="pd4"></div>
-      <div class="pd" id="pd5"></div>
-    </div>
+    <div class="site-logo"><img src="./assets/logo-black.svg" alt="authority.io" /></div>
 
     <!-- Step 0: opening + rate -->
-    <div class="step active" id="s0">
-      <img class="aa-logo-img" src="./assets/logo.svg" alt="authority.io" />
+    <div class="step active step-card" id="s0">
+      <div class="progress-bar">
+        <div class="pd done" data-pd="0"></div>
+        <div class="pd" data-pd="1"></div>
+        <div class="pd" data-pd="2"></div>
+        <div class="pd" data-pd="3"></div>
+        <div class="pd" data-pd="4"></div>
+        <div class="pd" data-pd="5"></div>
+      </div>
       <div class="aa-name">The Authority Audit</div>
       <div class="aa-tagline">The 5-minute diagnostic for experts who want to earn more &amp; work less</div>
       <div class="aa-sub-text">Answer 5 quick questions to see your exact income ceiling. Then unlock your personalised scalable asset blueprint — free.</div>
@@ -34,11 +34,22 @@
       <div class="q-title">What do you charge per hour or session?</div>
       <div class="q-sub">Use your effective rate — total revenue ÷ total hours worked.</div>
       <div class="input-row"><span class="prefix">$</span><input class="big-input" type="number" id="rate" placeholder="250" min="1" inputmode="decimal" /></div>
-      <button class="next-btn" id="btn0" onclick="AA.go(1)" disabled>Next →</button>
+      <div class="step-nav">
+        <span></span>
+        <button class="next-btn" id="btn0" onclick="AA.go(1)" disabled>Next →</button>
+      </div>
     </div>
 
     <!-- Step 1: weekly hours -->
-    <div class="step" id="s1">
+    <div class="step step-card" id="s1">
+      <div class="progress-bar">
+        <div class="pd" data-pd="0"></div>
+        <div class="pd" data-pd="1"></div>
+        <div class="pd" data-pd="2"></div>
+        <div class="pd" data-pd="3"></div>
+        <div class="pd" data-pd="4"></div>
+        <div class="pd" data-pd="5"></div>
+      </div>
       <div class="tag">Step 2 of 5</div>
       <div class="q-title">How many client-facing hours do you work per week?</div>
       <div class="q-sub">Include delivery, consulting, coaching — not admin or marketing.</div>
@@ -48,20 +59,42 @@
         <button class="opt" onclick="AA.selOpt('hours',30,this)">20–35 hrs<span class="opt-sub">Near capacity</span></button>
         <button class="opt" onclick="AA.selOpt('hours',40,this)">35+ hrs<span class="opt-sub">Fully maxed out</span></button>
       </div>
-      <button class="next-btn" id="btn1" disabled onclick="AA.go(2)">Next →</button>
+      <div class="step-nav">
+        <button class="back-btn" onclick="AA.goBack(0)">← Back</button>
+        <button class="next-btn" id="btn1" disabled onclick="AA.go(2)">Next →</button>
+      </div>
     </div>
 
     <!-- Step 2: income goal -->
-    <div class="step" id="s2">
+    <div class="step step-card" id="s2">
+      <div class="progress-bar">
+        <div class="pd" data-pd="0"></div>
+        <div class="pd" data-pd="1"></div>
+        <div class="pd" data-pd="2"></div>
+        <div class="pd" data-pd="3"></div>
+        <div class="pd" data-pd="4"></div>
+        <div class="pd" data-pd="5"></div>
+      </div>
       <div class="tag">Step 3 of 5</div>
       <div class="q-title">What's your annual income goal?</div>
       <div class="q-sub">The number that would genuinely change how you operate.</div>
       <div class="input-row"><span class="prefix">$</span><input class="big-input" type="number" id="goal" placeholder="500,000" min="1" inputmode="decimal" /></div>
-      <button class="next-btn" id="btn2" onclick="AA.go(3)" disabled>Next →</button>
+      <div class="step-nav">
+        <button class="back-btn" onclick="AA.goBack(1)">← Back</button>
+        <button class="next-btn" id="btn2" onclick="AA.go(3)" disabled>Next →</button>
+      </div>
     </div>
 
     <!-- Step 3: business model -->
-    <div class="step" id="s3">
+    <div class="step step-card" id="s3">
+      <div class="progress-bar">
+        <div class="pd" data-pd="0"></div>
+        <div class="pd" data-pd="1"></div>
+        <div class="pd" data-pd="2"></div>
+        <div class="pd" data-pd="3"></div>
+        <div class="pd" data-pd="4"></div>
+        <div class="pd" data-pd="5"></div>
+      </div>
       <div class="tag">Step 4 of 5</div>
       <div class="q-title">What best describes your current model?</div>
       <div class="q-sub">Be honest — this determines your leverage score.</div>
@@ -71,11 +104,22 @@
         <button class="opt" onclick="AA.selOpt('model',50,this)">Mix of 1:1 and programs<span class="opt-sub">Building leverage</span></button>
         <button class="opt" onclick="AA.selOpt('model',75,this)">Programs + some 1:1<span class="opt-sub">Mostly scalable</span></button>
       </div>
-      <button class="next-btn" id="btn3" disabled onclick="AA.go(4)">Next →</button>
+      <div class="step-nav">
+        <button class="back-btn" onclick="AA.goBack(2)">← Back</button>
+        <button class="next-btn" id="btn3" disabled onclick="AA.go(4)">Next →</button>
+      </div>
     </div>
 
     <!-- Step 4: profession -->
-    <div class="step" id="s4">
+    <div class="step step-card" id="s4">
+      <div class="progress-bar">
+        <div class="pd" data-pd="0"></div>
+        <div class="pd" data-pd="1"></div>
+        <div class="pd" data-pd="2"></div>
+        <div class="pd" data-pd="3"></div>
+        <div class="pd" data-pd="4"></div>
+        <div class="pd" data-pd="5"></div>
+      </div>
       <div class="tag">Step 5 of 5</div>
       <div class="q-title">What's your profession or area of expertise?</div>
       <div class="q-sub">Be specific — this is what your scalable asset will be built around.</div>
@@ -87,11 +131,22 @@
         <button class="ex-chip" onclick="AA.fillEx('Divorce attorney')">Divorce attorney</button>
         <button class="ex-chip" onclick="AA.fillEx('Financial planner for physicians')">Financial planner for physicians</button>
       </div>
-      <button class="next-btn" id="btn4" disabled onclick="AA.showResults()">See my results →</button>
+      <!-- Email gate: data capture lives in step 5, before results/blueprint are generated -->
+      <div class="gate-box" id="gate-box">
+        <div class="gate-icon">🔓</div>
+        <div class="gate-title">Unlock your personalised scalable asset blueprint</div>
+        <div class="gate-sub">Enter your details below and we'll generate your custom blueprint — showing exactly how your expertise becomes a scalable asset — plus a downloadable PDF of your full report.</div>
+        <div class="gate-fields">
+          <input class="gate-input" type="text" id="gate-name" placeholder="First name" autocomplete="given-name" />
+          <input class="gate-input" type="email" id="gate-email" placeholder="Email address" autocomplete="email" />
+        </div>
+        <button class="gate-btn" id="gate-btn" onclick="AA.submitGate()">Unlock my blueprint →</button>
+        <div class="gate-privacy">No spam. Unsubscribe anytime.</div>
+      </div>
     </div>
 
-    <!-- Results + gate + blueprint -->
-    <div class="step" id="s-results">
+    <!-- Following page: full income ceiling report + blueprint -->
+    <div class="step step-card" id="s-results">
       <div class="tag">Your income ceiling report</div>
       <div class="q-title" id="res-title"></div>
       <div class="q-sub" id="res-sub"></div>
@@ -150,21 +205,8 @@
 
       <div class="insight"><p id="insight-text"></p></div>
 
-      <!-- Email gate: hard gate before blueprint -->
-      <div class="gate-box" id="gate-box">
-        <div class="gate-icon">🔓</div>
-        <div class="gate-title">Unlock your personalised scalable asset blueprint</div>
-        <div class="gate-sub">Enter your details below and we'll generate your custom blueprint — showing exactly how your expertise becomes a scalable asset — plus a downloadable PDF of your full report.</div>
-        <div class="gate-fields">
-          <input class="gate-input" type="text" id="gate-name" placeholder="First name" autocomplete="given-name" />
-          <input class="gate-input" type="email" id="gate-email" placeholder="Email address" autocomplete="email" />
-        </div>
-        <button class="gate-btn" id="gate-btn" onclick="AA.submitGate()">Unlock my blueprint →</button>
-        <div class="gate-privacy">No spam. Unsubscribe anytime.</div>
-      </div>
-
       <div class="transition-box" id="transition-box" style="display:none">
-        <p>Here's your scalable asset blueprint — built specifically for <span id="trans-profession"></span>.</p>
+        <p>Here's your scalable asset blueprint — built specifically for your expertise.</p>
       </div>
 
       <div class="spinner-wrap" id="spinner-wrap">
@@ -243,7 +285,7 @@
           <div class="next-steps-bottom">
             <div class="cta-label">Ready to build this?</div>
             <p class="cta-heading">Book a complimentary consultation with our team — we'll show you exactly how to turn your expertise into a scalable online education business.</p>
-            <a class="cta-btn" id="cta-book" href="#" target="_blank" rel="noopener" onclick="AA.trackEvent('cta_click')">Book my free consultation →</a>
+            <a class="cta-btn" id="cta-book" href="https://www.authoritydotio.com/masterclass-schedule63952453" target="_blank" rel="noopener" onclick="AA.trackEvent('cta_click')">Book my complimentary course consultation →</a>
           </div>
         </div>
 
