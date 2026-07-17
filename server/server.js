@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const EMAIL_WEBHOOK_URL = process.env.EMAIL_WEBHOOK_URL || '';
-const BOOKING_URL = process.env.BOOKING_URL || 'https://authority.io/apply';
+const BOOKING_URL = process.env.BOOKING_URL || 'https://authority.io/';
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
