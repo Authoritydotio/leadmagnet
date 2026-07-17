@@ -2,7 +2,7 @@
   const state = { rate: null, hours: null, goal: null, model: null, profession: null };
   const results = {};
   let gateSubmitted = false;
-  let bookingUrl = 'https://www.authoritydotio.com/masterclass-schedule63952453';
+  let bookingUrl = 'https://authority.io/apply';
 
   function trackEvent(name, payload) {
     window.dataLayer = window.dataLayer || [];
