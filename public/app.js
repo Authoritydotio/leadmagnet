@@ -150,8 +150,8 @@
     document.getElementById('lev-desc').textContent = ld;
 
     document.getElementById('insight-text').textContent = goalAbove
-      ? 'Your time is worth ' + fmt(worthPerHr) + '/hr at your goal — you\'re currently earning $' + rate + '/hr. That ' + fmt(worthPerHr - rate) + "/hr gap isn't closed by working harder or raising your rate alone. It closes when your expertise earns beyond the hours you work. A scalable asset gives you back " + reclaimHrs + ' hours a week — and keeps earning while you\'re in them.'
-      : 'Your time is worth ' + fmt(worthPerHr) + '/hr at your goal — close to your current rate, but 100% of it requires you to show up. A scalable asset gives you back ' + reclaimHrs + " hours a week and keeps earning the weeks you don't.";
+      ? 'Your time is worth ' + fmt(worthPerHr) + '/hr at your goal — you\'re currently earning $' + rate + '/hr. That ' + fmt(worthPerHr - rate) + "/hr gap isn't closed by working harder or raising your rate alone. It closes when your expertise earns beyond the hours you work. A scalable program gives you back " + reclaimHrs + ' hours a week — and keeps earning while you\'re in them.'
+      : 'Your time is worth ' + fmt(worthPerHr) + '/hr at your goal — close to your current rate, but 100% of it requires you to show up. A scalable program gives you back ' + reclaimHrs + " hours a week and keeps earning the weeks you don't.";
 
     trackEvent('results_view', { profession, ceiling, goal, gap, leverageScore: model });
   }
@@ -161,6 +161,7 @@
     const profession = document.getElementById('profession').value.trim();
     const name = document.getElementById('gate-name').value.trim();
     const email = document.getElementById('gate-email').value.trim();
+    const phone = document.getElementById('gate-phone').value.trim();
     const validEmail = /\S+@\S+\.\S+/.test(email);
 
     let errorMsg = null;
@@ -190,6 +191,7 @@
     const payload = {
       firstName: name,
       email,
+      phone,
       profession,
       rate,
       hours,
@@ -305,11 +307,11 @@
 
   function renderFallback(payload) {
     document.getElementById('bp-headline').textContent =
-      'Your expertise as ' + payload.profession + ' can become a scalable asset — here is where to start.';
+      'Your expertise as ' + payload.profession + ' can become a scalable program — here is where to start.';
     document.getElementById('bp-summary').textContent =
       "We couldn't generate your full personalised blueprint right now, but your income ceiling diagnosis stands: your time is worth " +
       fmt(payload.worthPerHr) +
-      '/hr at your goal, and a scalable asset could reclaim ' +
+      '/hr at your goal, and a scalable program could reclaim ' +
       payload.reclaimHrs +
       ' hours a week.';
     ['c-curriculum', 'c-coaching', 'c-community', 'c-pop', 'bp-asset', 'm-title', 'm-body', 'me-title', 'me-body', 'mn-title', 'mn-body', 'w-now-sessions', 'w-now-admin', 'w-now-mktg', 'w-now-income', 'w-after-calls', 'w-after-delivery', 'w-after-income', 'p-cost', 'p-cost-desc', 'p-range', 'p-why-val', 'p-why-desc', 'p-note'].forEach((id) => {
@@ -338,7 +340,7 @@
     for (let i = 0; i <= 5; i++) setDotDone(i, false);
     setDotDone(0, true);
     ['rate', 'goal', 'profession'].forEach((id) => (document.getElementById(id).value = ''));
-    ['gate-name', 'gate-email'].forEach((id) => (document.getElementById(id).value = ''));
+    ['gate-name', 'gate-email', 'gate-phone'].forEach((id) => (document.getElementById(id).value = ''));
     document.querySelectorAll('.opt').forEach((b) => b.classList.remove('sel'));
     ['btn0', 'btn1', 'btn2', 'btn3'].forEach((id) => (document.getElementById(id).disabled = true));
     document.getElementById('blueprint-section').style.display = 'none';

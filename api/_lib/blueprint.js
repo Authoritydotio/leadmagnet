@@ -32,7 +32,7 @@ Return ONLY valid JSON, no markdown. Every string value must be a single line - 
     "community": "2 sentences - peer community for their client type.",
     "pop": "2 sentences - one-time live POP before going evergreen. No future programs."
   },
-  "assetName": "1-2 sentences - specific scalable asset. No time duration. No 1:1.",
+  "assetName": "1-2 sentences - specific scalable program. No time duration. No 1:1.",
   "clientSize": "e.g. '15-20 founding clients'",
   "weekComparison": {
     "nowSessions": "current weekly 1:1 hours",
@@ -53,7 +53,7 @@ Return ONLY valid JSON, no markdown. Every string value must be a single line - 
     "yearsStruggling": "Typical years struggling.",
     "totalCost": "Range of total lifetime cost.",
     "priceRange": "0.5%-5% value-based range.",
-    "recommendedPrice": "Specific recommended POP price.",
+    "recommendedPrice": "Specific recommended POP price, ALWAYS with a per-unit qualifier naming who pays (e.g. '$4,500 per client', '$2,800 per patient', '$3,200 per member') - infer the correct paying-entity noun from their profession. Never a bare dollar amount.",
     "whyItWorks": "One sentence - outcome value not program length.",
     "pricingNote": "2-3 sentences income math from $${p.ceiling} ceiling to $${p.goal} goal."
   },

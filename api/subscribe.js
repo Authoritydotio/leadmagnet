@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const result = await forwardLead(body, process.env.EMAIL_WEBHOOK_URL || '');
+    const result = await forwardLead(body, process.env.EMAIL_WEBHOOK_URL || 'https://hook.us2.make.com/grud00y9hpvpd4u8ng0vsk7hdd6di5l6');
     res.status(200).json(result);
   } catch (err) {
     console.error('[subscribe] webhook forward failed', err);

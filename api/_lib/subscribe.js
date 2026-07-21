@@ -4,12 +4,12 @@ function isValidLead(body) {
 
 async function forwardLead(body, webhookUrl) {
   const {
-    firstName, email, profession, ceiling, goal, gap,
+    firstName, email, phone, profession, ceiling, goal, gap,
     leverageScore, timeLockedPct, hoursNeeded, worthPerHr, reclaimHrs,
   } = body;
 
   if (!webhookUrl) {
-    console.warn('[subscribe] EMAIL_WEBHOOK_URL not configured - logging lead instead of forwarding.', { firstName, email, profession });
+    console.warn('[subscribe] EMAIL_WEBHOOK_URL not configured - logging lead instead of forwarding.', { firstName, email, phone, profession });
     return { ok: true, forwarded: false };
   }
 
@@ -17,7 +17,7 @@ async function forwardLead(body, webhookUrl) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      firstName, email, profession, ceiling, goal, gap,
+      firstName, email, phone, profession, ceiling, goal, gap,
       leverageScore, timeLockedPct, hoursNeeded, worthPerHr, reclaimHrs,
     }),
   });

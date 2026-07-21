@@ -11,11 +11,11 @@
   <div class="aa">
 
     <div class="print-header">
-      <img src="./assets/logo-black.svg" alt="authority.io" />
-      <div class="ph-text">Your Scalable Asset Blueprint — prepared for <span id="print-name"></span></div>
+      <img src="./assets/AuthorityAudit-blk-byauthorityio.png" alt="authority.io" />
+      <div class="ph-text">Your Scalable Program Blueprint — prepared for <span id="print-name"></span></div>
     </div>
 
-    <div class="site-logo"><img src="./assets/logo-black.svg" alt="authority.io" /></div>
+    <div class="site-logo"><img src="./assets/AuthorityAudit-blk-byauthorityio.png" alt="authority.io" /></div>
 
     <!-- Step 0: opening + rate -->
     <div class="step active step-card" id="s0">
@@ -27,9 +27,9 @@
         <div class="pd" data-pd="4"></div>
         <div class="pd" data-pd="5"></div>
       </div>
-      <div class="aa-name">The Authority Audit</div>
+      <img class="aa-logo-img" src="./assets/AuthorityAudit-blk-byauthorityio.png" alt="The Authority Audit" />
       <div class="aa-tagline">The 5-minute diagnostic for experts who want to earn more &amp; work less</div>
-      <div class="aa-sub-text">Answer 5 quick questions to see your exact income ceiling. Then unlock your personalised scalable asset blueprint — free.</div>
+      <div class="aa-sub-text">Answer 5 quick questions to see your exact income ceiling. Then unlock your personalised scalable program blueprint — free.</div>
       <div class="tag">Step 1 of 5</div>
       <div class="q-title">What do you charge per hour or session?</div>
       <div class="q-sub">Use your effective rate — total revenue ÷ total hours worked.</div>
@@ -121,8 +121,8 @@
         <div class="pd" data-pd="5"></div>
       </div>
       <div class="tag">Step 5 of 5</div>
-      <div class="q-title">What's your profession or area of expertise?</div>
-      <div class="q-sub">Be specific — this is what your scalable asset will be built around.</div>
+      <div class="q-title">What's your profession or area of expertise? *</div>
+      <div class="q-sub">Be specific — this is what your scalable program will be built around.</div>
       <input class="text-input" type="text" id="profession" placeholder="e.g. Functional medicine doctor, Executive leadership coach..." maxlength="120" />
       <div class="examples">
         <span style="font-size:12px;color:var(--color-text-muted)">Try:</span>
@@ -134,11 +134,12 @@
       <!-- Email gate: data capture lives in step 5, before results/blueprint are generated -->
       <div class="gate-box" id="gate-box">
         <div class="gate-icon">🔓</div>
-        <div class="gate-title">Unlock your personalised scalable asset blueprint</div>
-        <div class="gate-sub">Enter your details below and we'll generate your custom blueprint — showing exactly how your expertise becomes a scalable asset — plus a downloadable PDF of your full report.</div>
+        <div class="gate-title">Unlock your personalised scalable program blueprint</div>
+        <div class="gate-sub">Enter your details below and we'll generate your custom blueprint — showing exactly how your expertise becomes a scalable program — plus a downloadable PDF of your full report.</div>
         <div class="gate-fields">
-          <input class="gate-input" type="text" id="gate-name" placeholder="First name" autocomplete="given-name" />
-          <input class="gate-input" type="email" id="gate-email" placeholder="Email address" autocomplete="email" />
+          <input class="gate-input" type="text" id="gate-name" placeholder="First name *" autocomplete="given-name" />
+          <input class="gate-input" type="email" id="gate-email" placeholder="Email address *" autocomplete="email" />
+          <input class="gate-input" type="tel" id="gate-phone" placeholder="Phone number (optional)" autocomplete="tel" />
         </div>
         <button class="gate-btn" id="gate-btn" onclick="AA.submitGate()">Unlock my blueprint →</button>
         <div class="gate-privacy">No spam. Unsubscribe anytime.</div>
@@ -147,6 +148,7 @@
 
     <!-- Following page: full income ceiling report + blueprint -->
     <div class="step step-card" id="s-results">
+      <div class="ribbon">Scroll to the bottom to download your PDF</div>
       <div class="tag">Your income ceiling report</div>
       <div class="q-title" id="res-title"></div>
       <div class="q-sub" id="res-sub"></div>
@@ -170,7 +172,7 @@
         <div class="mc">
           <div class="mc-label">Hours you could reclaim</div>
           <div class="mc-val green" id="r-reclaim"></div>
-          <div class="mc-sub">per week with a scalable asset doing the work</div>
+          <div class="mc-sub">per week with a scalable program doing the work</div>
         </div>
       </div>
 
@@ -206,7 +208,7 @@
       <div class="insight"><p id="insight-text"></p></div>
 
       <div class="transition-box" id="transition-box" style="display:none">
-        <p>Here's your scalable asset blueprint — built specifically for your expertise.</p>
+        <p>Here's your scalable program blueprint — built specifically for your expertise.</p>
       </div>
 
       <div class="spinner-wrap" id="spinner-wrap">
@@ -216,7 +218,7 @@
 
       <div id="blueprint-section" style="display:none">
         <div class="bp-header">
-          <div class="bp-tag">Your scalable asset blueprint</div>
+          <div class="bp-tag">Your scalable program blueprint</div>
           <p class="bp-headline" id="bp-headline"></p>
         </div>
         <p class="bp-summary" id="bp-summary"></p>
@@ -225,11 +227,11 @@
           <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Curriculum</div><div class="c-body" id="c-curriculum"></div></div>
           <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Coaching</div><div class="c-body" id="c-coaching"></div></div>
           <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">Community</div><div class="c-body" id="c-community"></div></div>
-          <div class="c-card"><div class="c-letter">C</div><div class="c-name-lbl">POP Launch</div><div class="c-body" id="c-pop"></div></div>
+          <div class="c-card"><div class="c-letter">P</div><div class="c-name-lbl">POP Launch</div><div class="c-body" id="c-pop"></div></div>
         </div>
 
         <div class="asset-box">
-          <div class="asset-label">Your scalable asset</div>
+          <div class="asset-label">Your scalable program</div>
           <div class="asset-name" id="bp-asset"></div>
           <div>
             <span class="pill" id="bp-size"></span>
@@ -256,7 +258,7 @@
               <div class="week-item">If you take a week off<span class="week-val danger">$0</span></div>
             </div>
             <div class="week-col after">
-              <div class="week-col-label">With your scalable asset</div>
+              <div class="week-col-label">With your scalable program</div>
               <div class="week-item">Group coaching calls<span class="week-val" id="w-after-calls"></span></div>
               <div class="week-item">Program delivery + async<span class="week-val" id="w-after-delivery"></span></div>
               <div class="week-item">Weekly program income<span class="week-val" id="w-after-income"></span></div>
