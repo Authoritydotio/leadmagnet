@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const EMAIL_WEBHOOK_URL = process.env.EMAIL_WEBHOOK_URL || 'https://hook.us2.make.com/grud00y9hpvpd4u8ng0vsk7hdd6di5l6';
-const BOOKING_URL = process.env.BOOKING_URL || 'https://authority.io/apply';
+const BOOKING_URL = process.env.BOOKING_URL || 'https://authoritydotio.com/audit-booking';
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
